@@ -142,6 +142,8 @@
     text-shadow: 0 1px 0 #fff;
     filter: alpha(opacity=20);
     opacity: .2;
+    min-width: inherit;
+    margin-left:0;
   }
   .v-select.single.searching:not(.open):not(.loading) input[type="search"] {
     opacity: .2;
@@ -271,7 +273,7 @@
 
       <span class="selected-tag" v-for="option in valueAsArray" v-bind:key="option.index">
         {{ getOptionLabel(option) }}
-        <button v-if="multiple" @click="deselect(option)" type="button" class="close" aria-label="Remove option">
+        <button v-if="multiple" @click="deselect(option,'tag')" type="button" class="close" aria-label="Remove option">
           <span aria-hidden="true">&times;</span>
         </button>
       </span>
@@ -306,7 +308,7 @@
       <ul ref="dropdownMenu" v-if="dropdownOpen" class="dropdown-menu" :style="{ 'max-height': maxHeight }">
         <li v-for="(option, index) in filteredOptions" v-bind:key="index" :class="{ active: isOptionSelected(option), highlight: index === typeAheadPointer }" @mouseover="typeAheadPointer = index">
           <a @mousedown.prevent="select(option)">
-            {{ getOptionLabel(option) }}
+            {{ getOptionLabel(option,'list') }}
           </a>
         </li>
         <li v-if="!filteredOptions.length" class="no-options">
@@ -532,12 +534,12 @@
     watch: {
       /**
        * When the value prop changes, update
-			 * the internal mutableValue.
+             * the internal mutableValue.
        * @param  {mixed} val
        * @return {void}
        */
       value(val) {
-				this.mutableValue = val
+                this.mutableValue = val
       },
 
       /**
@@ -546,7 +548,7 @@
        * @param  {string|object} old
        * @return {void}
        */
-			mutableValue(val, old) {
+            mutableValue(val, old) {
         if (this.multiple) {
           this.onChange ? this.onChange(val) : null
         } else {
@@ -565,24 +567,24 @@
       },
 
       /**
-			 * Maybe reset the mutableValue
+             * Maybe reset the mutableValue
        * when mutableOptions change.
        * @return {[type]} [description]
        */
       mutableOptions() {
         if (!this.taggable && this.resetOnOptionsChange) {
-					this.mutableValue = this.multiple ? [] : null
+                    this.mutableValue = this.multiple ? [] : null
         }
       },
 
       /**
-			 * Always reset the mutableValue when
+             * Always reset the mutableValue when
        * the multiple prop changes.
        * @param  {Boolean} val
        * @return {void}
        */
       multiple(val) {
-				this.mutableValue = val ? [] : null
+                this.mutableValue = val ? [] : null
       }
     },
 
@@ -591,9 +593,9 @@
      * attach any event listeners.
      */
     created() {
-			this.mutableValue = this.value
+            this.mutableValue = this.value
       this.mutableOptions = this.options.slice(0)
-			this.mutableLoading = this.loading
+            this.mutableLoading = this.loading
 
       this.$on('option:created', this.maybePushTag)
     },
